@@ -10,7 +10,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./data/postgres:/bitnami/postgresql
+      - ebd-data:/bitnami/postgresql
 
   api:
     container_name: api-ebd
@@ -21,5 +21,9 @@ services:
       - postgres
     environment:
       - DATABASE_URL=postgresql://docker:docker@postgres:5432/ebd?schema=public
-    volumes:
-      - /app/node_modules
+      - PORT=3333
+      - JWT_PRIVATE_KEY=${JWT_PRIVATE_KEY}
+      - JWT_PUBLIC_KEY=${JWT_PUBLIC_KEY}
+
+volumes:
+  ebd-data:
