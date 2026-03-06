@@ -19,11 +19,11 @@ services:
       - "3333:3333"
     depends_on:
       - postgres
+    env_file:
+      - .env
     environment:
       - DATABASE_URL=postgresql://docker:docker@postgres:5432/ebd?schema=public
       - PORT=3333
-      - JWT_PRIVATE_KEY=${JWT_PRIVATE_KEY}
-      - JWT_PUBLIC_KEY=${JWT_PUBLIC_KEY}
 
 volumes:
   ebd-data:
