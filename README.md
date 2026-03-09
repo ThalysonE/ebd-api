@@ -69,7 +69,7 @@ O jeito mais fácil de fazer deploy sem usar a máquina local:
 3. Clique em **Add a Service > GitHub Repo** e conecte este repositório
 4. O Railway vai detectar o `Dockerfile` e o `railway.toml` automaticamente
 5. Na aba **Variables** do serviço da API, adicione:
-   - `DATABASE_URL` — Use a **reference variable** do PostgreSQL: `${{Postgres.DATABASE_URL}}`
+   - `DATABASE_URL` — Use a **reference variable** da PostgreSQL: `${{Postgres.DATABASE_URL}}`
    - `JWT_PUBLIC_KEY` — Chave pública RSA em base64
    - `JWT_PRIVATE_KEY` — Chave privada RSA em base64
 6. O Railway atribui a `PORT` automaticamente — não precisa configurar
