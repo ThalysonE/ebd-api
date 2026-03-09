@@ -1,29 +1,38 @@
-# Usa uma imagem base do Node.js
-FROM node:18
+# --- Stage 1: Build ---
+FROM node:18-alpine AS builder
 
-# Instala o pnpm globalmente
 RUN npm install -g pnpm
 
-# Define o diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copia apenas os arquivos necessários para instalar dependências
-COPY package.json pnpm-lock.yaml prisma ./
+COPY package.json pnpm-lock.yaml ./
+COPY prisma ./prisma
 
-# Instala as dependências com pnpm
 RUN pnpm install --frozen-lockfile --strict-peer-dependencies=false
 
-# Gera o Prisma Client
 RUN pnpm prisma generate
 
-# Copia o restante da aplicação
 COPY . .
 
-# Compila o código TypeScript
 RUN pnpm run build
 
-# Expõe a porta usada pela API
+# --- Stage 2: Production ---
+FROM node:18-alpine
+
+RUN npm install -g pnpm
+
+WORKDIR /app
+
+COPY package.json pnpm-lock.yaml ./
+COPY prisma ./prisma
+
+RUN pnpm install --frozen-lockfile --prod --strict-peer-dependencies=false
+
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
+COPY --from=builder /app/dist ./dist
+
 EXPOSE 3333
 
-# Comando para rodar a aplicação
-CMD ["pnpm", "run", "start:prod"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/infra/main"]

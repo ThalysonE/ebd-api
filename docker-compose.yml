@@ -10,7 +10,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./data/postgres:/bitnami/postgresql
+      - ebd-data:/bitnami/postgresql
 
   api:
     container_name: api-ebd
@@ -19,7 +19,11 @@ services:
       - "3333:3333"
     depends_on:
       - postgres
+    env_file:
+      - .env
     environment:
       - DATABASE_URL=postgresql://docker:docker@postgres:5432/ebd?schema=public
-    volumes:
-      - /app/node_modules
+      - PORT=3333
+
+volumes:
+  ebd-data:
