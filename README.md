@@ -60,21 +60,39 @@ A API estará rodando com hot reload ativado em: **http://localhost:3333**
 
 ## 🚀 Deploy em Produção
 
-### **Com Docker**
+### **Deploy automático com Render.com (recomendado)**
 
-A imagem Docker utiliza multi-stage build e executa automaticamente as migrations do Prisma ao iniciar. Para fazer o deploy:
+O jeito mais fácil de fazer deploy sem usar a máquina local:
 
-1. Defina as variáveis de ambiente (`DATABASE_URL`, `JWT_PRIVATE_KEY`, `JWT_PUBLIC_KEY`, `PORT`)
-2. Construa e execute a imagem:
+1. Crie uma conta no [Render.com](https://render.com)
+2. Crie um banco de dados PostgreSQL no Render
+3. Clique em **New > Blueprint** e conecte este repositório
+4. O Render vai detectar o `render.yaml` automaticamente
+5. Configure as variáveis de ambiente:
+   - `DATABASE_URL` — URL de conexão do PostgreSQL do Render
+   - `JWT_PUBLIC_KEY` — Chave pública RSA em base64
+   - `JWT_PRIVATE_KEY` — Chave privada RSA em base64
+6. Clique em **Apply** e o deploy será feito automaticamente!
+
+A cada push na branch `main`, o Render fará o deploy automaticamente.
+
+### **Deploy com a imagem Docker do GHCR**
+
+A cada push na branch `main`, o CI publica a imagem Docker no GitHub Container Registry:
 
 ```sh
-docker build -t ebd-api .
+docker pull ghcr.io/thalysone/ebd-api:latest
+```
+
+Para rodar em qualquer servidor:
+
+```sh
 docker run -p 3333:3333 \
   -e DATABASE_URL="postgresql://user:pass@host:5432/ebd?schema=public" \
   -e JWT_PRIVATE_KEY="..." \
   -e JWT_PUBLIC_KEY="..." \
   -e PORT=3333 \
-  ebd-api
+  ghcr.io/thalysone/ebd-api:latest
 ```
 
 ### **CI/CD**
@@ -88,7 +106,7 @@ O pipeline realiza:
 - Linting
 - Build
 - Testes unitários
-- Build da imagem Docker (apenas em push para `main`)
+- Build e push da imagem Docker para o GHCR (apenas em push para `main`)
 
 ---
 
