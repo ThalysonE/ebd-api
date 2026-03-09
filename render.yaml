@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: ebd-api
+    runtime: docker
+    plan: free
+    healthCheckPath: /api
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_PUBLIC_KEY
+        sync: false
+      - key: JWT_PRIVATE_KEY
+        sync: false
