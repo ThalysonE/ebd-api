@@ -32,6 +32,6 @@ COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/dist ./dist
 
-EXPOSE 3333
+EXPOSE ${PORT:-3333}
 
 CMD ["sh", "-c", "pnpm prisma migrate deploy && node dist/src/infra/main"]

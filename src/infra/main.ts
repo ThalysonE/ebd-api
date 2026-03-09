@@ -30,8 +30,8 @@ async function bootstrap() {
     }),
   );
 
-  console.log(`🚀 Application is running on: http://localhost:${port}`);
-  await app.listen(port);
+  console.log(`🚀 Application is running on port ${port}`);
+  await app.listen(port, '0.0.0.0');
 }
 
 bootstrap();
